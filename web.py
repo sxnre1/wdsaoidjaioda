@@ -2,17 +2,18 @@ import os
 import requests
 from flask import Flask, request, render_template
 import duckdb
-from setting import *
 
 app = Flask(__name__)
 
 API_ENDPOINT = 'https://discord.com/api/v9'
-CLIENT_ID = CLIENT_ID
-CLIENT_SECRET = CLIENT_SECRET
-BOT_TOKEN = BOT_TOKEN
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+DB_PATH = '/tmp/database.duckdb'
 
 def start_db():
-      con = duckdb.connect("database.duckdb")
+      con = duckdb.connect(DB_PATH)
       cur = con.cursor()
       return con, cur
 
@@ -60,7 +61,10 @@ def joi(link):
       try:
           con, cur = start_db()
           cur.execute("SELECT * FROM guilds WHERE link == ?", (link,))
-          gid = cur.fetchone()[0]
+          row = cur.fetchone()
+          if not row:
+              return render_template("fail.html")
+          gid = row[0]
           con.close()
           ginfo = getguild(gid)
           r = getme(gid)
