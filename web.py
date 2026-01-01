@@ -1,7 +1,7 @@
 import os
 import requests
 from flask import Flask, request, render_template
-import duckdb
+import sqlite3
 
 app = Flask(__name__)
 
@@ -10,10 +10,10 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-DB_PATH = '/tmp/database.duckdb'
+DB_PATH = '/tmp/database.db'
 
 def start_db():
-      con = duckdb.connect(DB_PATH)
+      con = sqlite3.connect(DB_PATH)
       cur = con.cursor()
       return con, cur
 

@@ -1,6 +1,6 @@
 from http.client import FOUND
 import discord
-import duckdb
+import sqlite3
 import requests
 from setting import *
 import uuid
@@ -128,7 +128,7 @@ def getguild(id):
     return r.json()
 
 def start_db():
-      con = duckdb.connect("database.duckdb")
+      con = sqlite3.connect("database.db")
       cur = con.cursor()
       return con, cur
 
@@ -312,7 +312,7 @@ async def on_message(message):
                     cur.execute("SELECT * FROM guilds WHERE link == ?", (link,))
                     find = cur.fetchone()
                     if not find:
-                        con = duckdb.connect("database.duckdb")
+                        con = sqlite3.connect("database.db")
                         cur = con.cursor()
                         a = getguild(message.guild.id)
                         cur.execute("UPDATE guilds SET link = ? WHERE id == ?;", (link, message.guild.id))

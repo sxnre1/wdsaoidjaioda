@@ -2,6 +2,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-database.duckdb
+database.db
 setting.py
 .vscode/
